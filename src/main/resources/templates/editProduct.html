@@ -16,7 +16,7 @@
     <form th:action="@{/product/edit}" th:object="${product}" method="post">
 
         <!-- IMPORTANT: keep product ID -->
-        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{productId}">
 
         <div class="form-group">
             <label for="nameInput">Name</label>
