@@ -29,3 +29,13 @@ and pasted across different test classes. This kind of duplication makes the cod
 to break when something changes. To keep things cleaner, common setup logic should be moved into a shared base 
 class or helper methods. That way, each test class can focus on testing specific features, making the code easier 
 to read and maintain.
+
+------------------------------------------------
+During the exercise, one of the main code quality issues I fixed was related to PMD rules in the test class. Initially, 
+the default EshopApplicationTests did not contain any assertions, which triggered the JUnitTestsShouldIncludeAssert rule.
+After I added assertTrue(true), PMD reported additional violations such as UnnecessaryBooleanAssertion and JUnitAssertionsShouldIncludeMessage, because the assertion was meaningless and did not include a message. To fix this properly, I replaced it with a more meaningful assertion using assertNotNull and included a clear message so it complied with the PMD rules. My strategy was to read the PMD error messages carefully, understand why the rule was triggered, and then modify the test so it was both logically valid and compliant with the configured quality standards instead of just trying to bypass the rule.
+
+Based on my GitHub Actions workflow, I believe the current implementation already meets the definition of Continuous Integration and Continuous Deployment. It fulfills Continuous Integration because every time I push code to the repository, the workflow automatically builds the project, runs all tests, and checks code quality using PMD and JaCoCo without manual intervention. This ensures that integration problems are detected early. It also meets Continuous Deployment because after the build and checks pass, the application can be deployed automatically to the PaaS (Render), making the latest working version available online. Since the entire process from commit to deployment runs automatically through the pipeline, I think it reflects the core principles of CI/CD.
+
+
+Deployment link: https://module-1-coding-standards-k7hm.onrender.com
