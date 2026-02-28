@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+int unusedVariable = 100;
+
 @Controller
 @RequestMapping("/product")
 public class ProductController {
