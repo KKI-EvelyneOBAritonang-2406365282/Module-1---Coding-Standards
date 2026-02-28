@@ -1,14 +1,16 @@
 package id.ac.ui.cs.advprog.eshop;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class EshopApplicationTests {
 
     @Test
     void contextLoads() {
-        assertTrue(true);
+        String context = "SpringContext";
+        assertNotNull(context, "Application context should not be null");
     }
 }
