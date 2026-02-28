@@ -14,6 +14,11 @@ pmd {
     toolVersion = "7.0.0-rc4"
     isConsoleOutput = true
     isIgnoreFailures = false
+
+    ruleSets = listOf(
+        "category/java/bestpractices.xml",
+        "category/java/errorprone.xml"
+    )
 }
 
 group = "id.ac.ui.cs.advprog"
