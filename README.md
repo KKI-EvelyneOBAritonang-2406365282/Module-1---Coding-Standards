@@ -32,10 +32,48 @@ to read and maintain.
 
 ------------------------------------------------
 During the exercise, one of the main code quality issues I fixed was related to PMD rules in the test class. Initially, 
-the default EshopApplicationTests did not contain any assertions, which triggered the JUnitTestsShouldIncludeAssert rule.
-After I added assertTrue(true), PMD reported additional violations such as UnnecessaryBooleanAssertion and JUnitAssertionsShouldIncludeMessage, because the assertion was meaningless and did not include a message. To fix this properly, I replaced it with a more meaningful assertion using assertNotNull and included a clear message so it complied with the PMD rules. My strategy was to read the PMD error messages carefully, understand why the rule was triggered, and then modify the test so it was both logically valid and compliant with the configured quality standards instead of just trying to bypass the rule.
+the default EshopApplicationTests did not contain any assertions, which triggered the JUnitTestsShouldIncludeAssert 
+rule. 
+After I added assertTrue(true), PMD reported additional violations such as UnnecessaryBooleanAssertion and 
+JUnitAssertionsShouldIncludeMessage, because the assertion was meaningless and did not include a message. To fix this 
+properly, I replaced it with a more meaningful assertion using assertNotNull and included a clear message so it 
+complied with the PMD rules. My strategy was to read the PMD error messages carefully, understand why the rule was 
+triggered, and then modify the test so it was both logically valid and compliant with the configured quality standards 
+instead of just trying to bypass the rule.
 
 Based on my GitHub Actions workflow, I believe the current implementation already meets the definition of Continuous Integration and Continuous Deployment. It fulfills Continuous Integration because every time I push code to the repository, the workflow automatically builds the project, runs all tests, and checks code quality using PMD and JaCoCo without manual intervention. This ensures that integration problems are detected early. It also meets Continuous Deployment because after the build and checks pass, the application can be deployed automatically to the PaaS (Render), making the latest working version available online. Since the entire process from commit to deployment runs automatically through the pipeline, I think it reflects the core principles of CI/CD.
 
 
 Deployment link: https://module-1-coding-standards-k7hm.onrender.com
+
+--------------------------------------------------------------
+
+In this assignment, I refactored both the Product and Car modules in my project to properly follow the SOLID principles. 
+For the Single Responsibility Principle (SRP), I made sure that each class has only one responsibility. The Controller 
+classes only handle HTTP requests and responses, the Service classes handle business logic, and the Repository classes 
+handle data storage. Previously, some logic like searching and deleting data was implemented inside the Service instead 
+of the Repository, which mixed responsibilities. After refactoring, all data-related operations such as findById, update, 
+and delete are handled inside the Repository layer, so each layer now has a clear and single responsibility.
+
+For the Open Closed Principle (OCP), I structured the system so that it is open for extension but closed for 
+modification. If I want to add a new entity such as Motorcycle in the future, I can create a new Controller, Service, 
+and Repository without modifying existing Product or Car classes. This allows the system to grow without changing stable 
+code.
+
+For the Liskov Substitution Principle (LSP), I removed incorrect inheritance between CarController and ProductController. 
+Previously, CarController extended ProductController, which was not logically correct because a CarController is not a 
+specialized version of ProductController. This could break program correctness. After refactoring, both controllers are 
+independent classes, so LSP is satisfied.
+
+For the Interface Segregation Principle (ISP), I ensured that interfaces such as ProductService and CarService only 
+contain methods that are relevant to their specific entities. There are no unnecessary methods in the interfaces, so
+classes are not forced to implement methods they do not use.
+
+For the Dependency Inversion Principle (DIP), I introduced repository interfaces (ProductRepositoryInterface and 
+CarRepositoryInterface). Instead of depending directly on concrete repository classes, the Service layer now depends 
+on these abstractions. The concrete repositories implement these interfaces. This makes the system more flexible and
+easier to modify in the future, for example if I want to switch to a database implementation instead of using an 
+in-memory list.
+
+After applying these changes, both Product and Car modules now follow all five SOLID principles. The code structure is
+cleaner, easier to understand, and more maintainable, especially for future development.
