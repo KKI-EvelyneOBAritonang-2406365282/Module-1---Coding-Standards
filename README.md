@@ -77,3 +77,23 @@ in-memory list.
 
 After applying these changes, both Product and Car modules now follow all five SOLID principles. The code structure is
 cleaner, easier to understand, and more maintainable, especially for future development.
+
+-------------------------------------------------------------
+## Module 4:
+
+After following the Test-Driven Development (TDD) workflow in this exercise, I think the process is useful because it 
+forces me to think about the expected behavior of the program before implementing the code. Writing the tests first 
+helped me understand the requirements more clearly and made debugging easier since I could immediately see which parts 
+of the code were not working. However, sometimes it was still a bit difficult to design good tests at the beginning 
+because I was not fully sure about the implementation yet. In the future, I think I should spend more time 
+understanding the requirements and possible edge cases before writing the tests so the test cases can be more complete 
+and meaningful.
+
+From the unit tests created in this tutorial, I think most of them follow the F.I.R.S.T. principles. The tests are 
+generally fast since they only test small parts of the code, and they are independent because each test uses its own 
+setup. The results are also repeatable since they do not rely on external systems like databases. However, some tests 
+could still be improved to be more thorough and self-validating, especially by adding more edge cases or clearer 
+assertions. Next time, I will try to design tests that cover more scenarios and make sure each test clearly checks one 
+specific behavior of the program.
+
+
