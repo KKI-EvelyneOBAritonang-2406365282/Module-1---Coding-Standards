@@ -33,7 +33,7 @@ public class Payment {
         if (!"SUCCESS".equals(status) && !"REJECTED".equals(status)) {
             throw new IllegalArgumentException();
         }
-        this.status = status;
+        this.status = status; // this is after fixing, but my files was recently re commited due to accident
     }
 
     private String determineStatus() {
