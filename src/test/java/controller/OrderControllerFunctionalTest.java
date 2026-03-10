@@ -1,6 +1,7 @@
 package controller;
 
 import id.ac.ui.cs.advprog.eshop.model.Order;
+import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.model.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,10 +11,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import id.ac.ui.cs.advprog.eshop.service.OrderService;
+import id.ac.ui.cs.advprog.eshop.service.PaymentService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,7 +35,11 @@ class OrderControllerFunctionalTest {
     @MockBean
     private OrderService orderService;
 
+    @MockBean
+    private PaymentService paymentService;
+
     private List<Order> orders;
+    private Payment payment;
 
     @BeforeEach
     void setUp() {
@@ -58,6 +68,10 @@ class OrderControllerFunctionalTest {
                 "Safira Sudrajat"
         );
         orders.add(order2);
+
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("voucherCode", "ESHOP1234ABC5678");
+        payment = new Payment(order1, "Voucher Code", paymentData);
     }
 
     @Test
@@ -83,5 +97,28 @@ class OrderControllerFunctionalTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("order-history-list"))
                 .andExpect(model().attributeExists("orders"));
+    }
+
+    @Test
+    void testPayOrderPage() throws Exception {
+        doReturn(orders.get(0)).when(orderService).findById(orders.get(0).getId());
+
+        mockMvc.perform(get("/order/pay/" + orders.get(0).getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("order-pay"))
+                .andExpect(model().attributeExists("order"));
+    }
+
+    @Test
+    void testPostPayOrder() throws Exception {
+        doReturn(orders.get(0)).when(orderService).findById(orders.get(0).getId());
+        doReturn(payment).when(paymentService).addPayment(eq(orders.get(0)), eq("Voucher Code"), any(Map.class));
+
+        mockMvc.perform(post("/order/pay/" + orders.get(0).getId())
+                        .param("method", "Voucher Code")
+                        .param("voucherCode", "ESHOP1234ABC5678"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("payment-result"))
+                .andExpect(model().attributeExists("payment"));
     }
 }
