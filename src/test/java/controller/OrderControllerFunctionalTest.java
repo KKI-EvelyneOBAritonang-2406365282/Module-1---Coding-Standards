@@ -82,6 +82,16 @@ class OrderControllerFunctionalTest {
     }
 
     @Test
+    void testPostCreateOrder() throws Exception {
+        mockMvc.perform(post("/order/create")
+                        .param("author", "Safira Sudrajat")
+                        .param("productName", "Sampo Cap Bambang")
+                        .param("productQuantity", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/order/history"));
+    }
+
+    @Test
     void testHistoryFormPage() throws Exception {
         mockMvc.perform(get("/order/history"))
                 .andExpect(status().isOk())
@@ -110,13 +120,27 @@ class OrderControllerFunctionalTest {
     }
 
     @Test
-    void testPostPayOrder() throws Exception {
+    void testPostPayOrderVoucher() throws Exception {
         doReturn(orders.get(0)).when(orderService).findById(orders.get(0).getId());
         doReturn(payment).when(paymentService).addPayment(eq(orders.get(0)), eq("Voucher Code"), any(Map.class));
 
         mockMvc.perform(post("/order/pay/" + orders.get(0).getId())
                         .param("method", "Voucher Code")
                         .param("voucherCode", "ESHOP1234ABC5678"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("payment-result"))
+                .andExpect(model().attributeExists("payment"));
+    }
+
+    @Test
+    void testPostPayOrderBankTransfer() throws Exception {
+        doReturn(orders.get(0)).when(orderService).findById(orders.get(0).getId());
+        doReturn(payment).when(paymentService).addPayment(eq(orders.get(0)), eq("Bank Transfer"), any(Map.class));
+
+        mockMvc.perform(post("/order/pay/" + orders.get(0).getId())
+                        .param("method", "Bank Transfer")
+                        .param("bankName", "BCA")
+                        .param("referenceCode", "TRF-123456"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("payment-result"))
                 .andExpect(model().attributeExists("payment"));
