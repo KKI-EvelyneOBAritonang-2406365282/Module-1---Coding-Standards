@@ -1,5 +1,7 @@
-package id.ac.ui.cs.advprog.eshop.model;
+package model;
 
+import id.ac.ui.cs.advprog.eshop.model.Order;
+import id.ac.ui.cs.advprog.eshop.model.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
