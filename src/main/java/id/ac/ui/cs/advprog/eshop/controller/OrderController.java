@@ -7,9 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import id.ac.ui.cs.advprog.eshop.service.OrderService;
+import id.ac.ui.cs.advprog.eshop.service.PaymentService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -18,6 +21,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @GetMapping("/create")
     public String createOrderPage() {
@@ -62,5 +68,35 @@ public class OrderController {
         List<Order> orders = orderService.findAllByAuthor(author);
         model.addAttribute("orders", orders);
         return "order-history-list";
+    }
+
+    @GetMapping("/pay/{orderId}")
+    public String payOrderPage(@PathVariable("orderId") String orderId, Model model) {
+        Order order = orderService.findById(orderId);
+        model.addAttribute("order", order);
+        return "order-pay";
+    }
+
+    @PostMapping("/pay/{orderId}")
+    public String payOrder(
+            @PathVariable("orderId") String orderId,
+            @RequestParam("method") String method,
+            @RequestParam Map<String, String> requestParams,
+            Model model
+    ) {
+        Order order = orderService.findById(orderId);
+
+        Map<String, String> paymentData = new HashMap<>();
+
+        if ("Voucher Code".equals(method)) {
+            paymentData.put("voucherCode", requestParams.get("voucherCode"));
+        } else if ("Bank Transfer".equals(method)) {
+            paymentData.put("bankName", requestParams.get("bankName"));
+            paymentData.put("referenceCode", requestParams.get("referenceCode"));
+        }
+
+        var payment = paymentService.addPayment(order, method, paymentData);
+        model.addAttribute("payment", payment);
+        return "payment-result";
     }
 }
