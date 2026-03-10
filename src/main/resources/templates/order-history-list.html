@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order History List</title>
+</head>
+<body>
+<h1>Order History</h1>
+
+<p th:if="${orders.isEmpty()}">No orders found.</p>
+
+<table border="1" th:if="${!orders.isEmpty()}">
+    <thead>
+    <tr>
+        <th>Order ID</th>
+        <th>Author</th>
+        <th>Order Time</th>
+        <th>Status</th>
+        <th>Pay</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${order.author}"></td>
+        <td th:text="${order.orderTime}"></td>
+        <td th:text="${order.status}"></td>
+        <td>
+            <a th:href="@{/order/pay/{id}(id=${order.id})}">Pay</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
